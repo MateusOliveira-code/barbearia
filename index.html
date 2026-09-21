@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Barbearia do Rafa — agendamento de serviços, agenda do barbeiro e administração do catálogo." />
+  <title>Barbearia do Rafa | Agendamento</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">R</div>
+        <div>
+          <strong>Barbearia do Rafa</strong>
+          <span>corte • barba • agenda</span>
+        </div>
+      </div>
+
+      <div class="role-block">
+        <span class="eyebrow">Acessar como</span>
+        <button class="role-button active" data-role="cliente" type="button">
+          <span class="role-icon">01</span>
+          <span><strong>Cliente</strong><small>Agendar horário</small></span>
+        </button>
+        <button class="role-button" data-role="barbeiro" type="button">
+          <span class="role-icon">02</span>
+          <span><strong>Barbeiro</strong><small>Agenda do dia</small></span>
+        </button>
+        <button class="role-button" data-role="admin" type="button">
+          <span class="role-icon">03</span>
+          <span><strong>Administrador</strong><small>Usuários e serviços</small></span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="reset-demo" class="ghost-button full" type="button">Restaurar demonstração</button>
+        <small>3 histórias de usuário</small>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow" id="screen-eyebrow">Barbearia do Rafa</span>
+          <h1 id="screen-title">Seu corte. Seu horário.</h1>
+          <p id="screen-subtitle">Escolha o serviço, o profissional e um horário livre sem precisar ligar.</p>
+        </div>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          Agendamento online
+        </div>
+      </header>
+
+      <section id="cliente-view" class="view active" aria-labelledby="screen-title">
+        <div class="steps" aria-label="Etapas do agendamento">
+          <div class="step active"><span>1</span><strong>Serviços</strong></div>
+          <div class="step"><span>2</span><strong>Profissional</strong></div>
+          <div class="step"><span>3</span><strong>Horário</strong></div>
+          <div class="step"><span>4</span><strong>Confirmar</strong></div>
+        </div>
+
+        <div class="client-layout">
+          <div class="content-stack">
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">Etapa 1</span>
+                  <h2>Escolha os serviços</h2>
+                  <p>Você pode selecionar mais de um serviço.</p>
+                </div>
+                <span id="service-count" class="counter-badge">0 selecionados</span>
+              </div>
+              <div id="services-grid" class="services-grid"></div>
+            </section>
+
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">Etapa 2</span>
+                  <h2>Escolha o profissional</h2>
+                  <p>Selecione quem você prefere para o atendimento.</p>
+                </div>
+              </div>
+              <div id="barbers-grid" class="barbers-grid"></div>
+            </section>
+
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">Etapa 3</span>
+                  <h2>Data e horário</h2>
+                  <p>Os horários ocupados ficam indisponíveis automaticamente.</p>
+                </div>
+              </div>
+              <div class="schedule-controls">
+                <label class="field">
+                  <span>Data</span>
+                  <input id="booking-date" type="date" />
+                </label>
+                <div class="field grow">
+                  <span>Horários disponíveis</span>
+                  <div id="times-grid" class="times-grid"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">Meus agendamentos</span>
+                  <h2>Próximos horários</h2>
+                  <p>Consulte e cancele seus agendamentos futuros.</p>
+                </div>
+              </div>
+              <div id="client-bookings" class="booking-list"></div>
+            </section>
+          </div>
+
+          <aside class="booking-summary panel sticky-card">
+            <div class="section-heading compact">
+              <div>
+                <span class="eyebrow">Resumo</span>
+                <h2>Seu agendamento</h2>
+              </div>
+            </div>
+
+            <div class="summary-block">
+              <span>Serviços</span>
+              <div id="summary-services" class="summary-lines muted">Nenhum serviço selecionado</div>
+            </div>
+            <div class="summary-row"><span>Profissional</span><strong id="summary-barber">—</strong></div>
+            <div class="summary-row"><span>Data</span><strong id="summary-date">—</strong></div>
+            <div class="summary-row"><span>Horário</span><strong id="summary-time">—</strong></div>
+            <div class="summary-row total"><span>Total previsto</span><strong id="summary-total">R$ 0,00</strong></div>
+
+            <div class="divider"></div>
+
+            <div class="mini-form">
+              <label class="field">
+                <span>Seu nome</span>
+                <input id="client-name" type="text" maxlength="80" placeholder="Ex.: João" autocomplete="name" />
+              </label>
+              <label class="field">
+                <span>Telefone</span>
+                <input id="client-phone" type="tel" maxlength="20" placeholder="(34) 99999-9999" autocomplete="tel" />
+              </label>
+            </div>
+
+            <button id="confirm-booking" class="primary-button full" type="button">Confirmar agendamento</button>
+            <p class="helper-text">O valor final pode ser ajustado pelo barbeiro ao concluir o atendimento.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="barbeiro-view" class="view" aria-labelledby="screen-title">
+        <div class="dashboard-toolbar panel subtle">
+          <div>
+            <span class="eyebrow">Barbeiro em atendimento</span>
+            <h2>Agenda individual</h2>
+          </div>
+          <label class="field inline-field">
+            <span>Profissional</span>
+            <select id="barber-selector"></select>
+          </label>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-icon">HOJE</span>
+            <div><small>Agendamentos hoje</small><strong id="stat-today">0</strong></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon">OK</span>
+            <div><small>Concluídos</small><strong id="stat-completed">0</strong></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon">PEND.</span>
+            <div><small>Pendentes</small><strong id="stat-pending">0</strong></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon">R$</span>
+            <div><small>Faturado hoje</small><strong id="stat-revenue">R$ 0,00</strong></div>
+          </article>
+        </div>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Agenda de hoje</span>
+              <h2 id="barber-agenda-title">Atendimentos</h2>
+              <p>Veja os detalhes e conclua os atendimentos realizados.</p>
+            </div>
+            <span id="today-label" class="date-chip"></span>
+          </div>
+          <div id="barber-bookings" class="agenda-list"></div>
+        </section>
+      </section>
+
+      <section id="admin-view" class="view" aria-labelledby="screen-title">
+        <div class="admin-tabs" role="tablist" aria-label="Módulos administrativos">
+          <button class="admin-tab active" data-admin-tab="usuarios" type="button">Usuários</button>
+          <button class="admin-tab" data-admin-tab="servicos" type="button">Serviços</button>
+        </div>
+
+        <section id="admin-usuarios" class="admin-panel active">
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Gestão de usuários</span>
+                <h2>Barbeiros e clientes</h2>
+                <p>Cadastre, edite ou inative perfis sem apagar o histórico.</p>
+              </div>
+              <button id="new-user" class="primary-button" type="button">+ Novo usuário</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Perfil</th>
+                    <th>Contato</th>
+                    <th>Status</th>
+                    <th class="actions-col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="admin-servicos" class="admin-panel">
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Catálogo</span>
+                <h2>Serviços e preços</h2>
+                <p>Cadastre, edite, desative ou remova serviços do catálogo.</p>
+              </div>
+              <button id="new-service" class="primary-button" type="button">+ Novo serviço</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Serviço</th>
+                    <th>Duração</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th class="actions-col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="services-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow" id="modal-eyebrow">Editar</span>
+          <h2 id="modal-title">Registro</h2>
+        </div>
+        <button id="modal-close" class="icon-button" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="ghost-button" type="button">Cancelar</button>
+        <button id="modal-save" class="primary-button" type="button">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
