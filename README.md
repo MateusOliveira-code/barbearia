@@ -111,8 +111,17 @@ barbearia/
 │   └── styles.css
 ├── js/
 │   ├── app.js
-│   └── data.js
+│   ├── data.js
+│   ├── controller/
+│   │   └── AgendamentoController.js
+│   ├── service/
+│   │   └── AgendamentoService.js
+│   ├── repository/
+│   │   └── AgendamentoRepository.js
+│   └── model/
+│       └── Agendamento.js
 ├── docs/
+│   ├── ARQUITETURA.md
 │   └── RASTREABILIDADE.md
 ├── .gitignore
 └── README.md
@@ -163,3 +172,26 @@ Essas funcionalidades podem ser consideradas em versões futuras sem alterar o e
 ## Próxima etapa
 
 A próxima etapa do projeto é disponibilizar a aplicação online utilizando **GitHub Pages**, facilitando a demonstração sem necessidade de baixar os arquivos.
+
+
+## Arquitetura em camadas — Aula 9
+
+A funcionalidade de **confirmação de agendamento da Issue #1** foi refatorada para separar responsabilidades em camadas.
+
+```mermaid
+flowchart LR
+    UI[View / app.js] --> C[AgendamentoController]
+    C --> S[AgendamentoService]
+    S --> M[Agendamento - Model]
+    S --> R[AgendamentoRepository]
+    R --> D[Estado / LocalStorage]
+```
+
+### Responsabilidades
+
+- **Controller:** recebe a solicitação da interface e devolve uma resposta simples, sem concentrar regra de negócio.
+- **Service:** valida o caso de uso, verifica disponibilidade e coordena a criação do cliente e do agendamento.
+- **Repository:** consulta e salva dados, isolando a persistência do restante da aplicação.
+- **Model:** representa a estrutura do agendamento.
+
+A decisão arquitetural e o fluxo completo estão documentados em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md).
