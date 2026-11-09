@@ -59,6 +59,14 @@
   let modalContext = null;
   let toastTimer = null;
 
+
+  const agendamentoRepository = new window.BarbeariaRafa.AgendamentoRepository(
+    () => state,
+    () => saveState()
+  );
+  const agendamentoService = new window.BarbeariaRafa.AgendamentoService(agendamentoRepository, uid);
+  const agendamentoController = new window.BarbeariaRafa.AgendamentoController(agendamentoService);
+
   const roleCopy = {
     cliente: ['Barbearia do Rafa','Seu corte. Seu horário.','Escolha o serviço, o profissional e um horário livre sem precisar ligar.'],
     barbeiro: ['Barbearia do Rafa — equipe','Agenda do dia','Visualize seus atendimentos, conclua o serviço e registre o valor final.'],
@@ -225,46 +233,36 @@
   }
 
   function confirmBooking() {
-    const name = $('#client-name').value.trim();
-    const phone = $('#client-phone').value.trim();
-    if (!selectedServices.length) return toast('Selecione pelo menos um serviço.');
-    if (!selectedBarber) return toast('Selecione um profissional.');
-    if (!selectedDate || !selectedTime) return toast('Escolha uma data e um horário disponíveis.');
-    if (name.length < 2 || phone.length < 8) return toast('Informe seu nome e telefone para confirmar.');
+    const resultado = agendamentoController.confirmar({
+      serviceIds: selectedServices,
+      barberId: selectedBarber,
+      date: selectedDate,
+      time: selectedTime,
+      name: $('#client-name').value,
+      phone: $('#client-phone').value
+    });
 
-    const stillOccupied = state.bookings.some(booking => booking.barberId === selectedBarber && booking.date === selectedDate && booking.time === selectedTime && booking.status === 'confirmado');
-    if (stillOccupied) {
-      selectedTime = null;
-      renderTimes();
-      renderSummary();
-      return toast('Esse horário acabou de ficar indisponível. Escolha outro.');
+    if (!resultado.ok) {
+      if (resultado.code === 'HORARIO_OCUPADO') {
+        selectedTime = null;
+        renderTimes();
+        renderSummary();
+      }
+      return toast(resultado.message);
     }
 
-    let client = state.users.find(user => user.role === 'cliente' && normalizePhone(user.phone) === normalizePhone(phone));
-    if (!client) {
-      client = { id: uid('usr-c'), name, role: 'cliente', phone, active: true };
-      state.users.push(client);
-    } else {
-      client.name = name;
-      client.phone = phone;
-      client.active = true;
-    }
-
-    const booking = {
-      id: uid('ag'), clientId: client.id, clientName: name, clientPhone: phone,
-      barberId: selectedBarber, serviceIds: [...selectedServices], date: selectedDate, time: selectedTime,
-      status: 'confirmado', finalValue: null, createdAt: new Date().toISOString()
+    clientProfile = {
+      id: resultado.cliente.id,
+      name: resultado.cliente.name,
+      phone: resultado.cliente.phone
     };
-    state.bookings.push(booking);
-    clientProfile = { id: client.id, name, phone };
     saveClientProfile(clientProfile);
-    saveState();
 
     selectedServices = [];
     selectedBarber = null;
     selectedTime = null;
     renderAll();
-    toast('Agendamento confirmado com sucesso.');
+    toast(resultado.message);
   }
 
   function normalizePhone(phone = '') { return phone.replace(/\D/g, ''); }
