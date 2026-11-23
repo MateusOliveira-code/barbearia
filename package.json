@@ -1,0 +1,12 @@
+{
+  "name": "barbearia-do-rafa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Projeto da disciplina de Engenharia de Software",
+  "scripts": {
+    "test": "node --test tests/agendamento.service.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
